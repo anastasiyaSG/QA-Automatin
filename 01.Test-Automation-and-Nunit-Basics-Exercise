@@ -1,0 +1,156 @@
+Console App:
+using System;
+
+namespace SeleniumBasicDemo
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Hello BankAcount!:)");
+        }
+    }
+    public class BankAcount
+    {
+        decimal amount;
+
+        public BankAcount(decimal initAmount)
+        {
+            this.Amount = initAmount;
+        }
+
+        public decimal Amount
+        {
+            get
+            {
+                return this.amount;
+            }
+            private set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentException("Amount can not be negative!");
+                }
+                else
+                {
+                    this.amount = value;
+                }
+            }
+        }
+
+        public void Deposit(decimal amount)
+        {
+            if (amount < 0)
+            {
+                throw new ArgumentException("Deposit can not be negative!");
+            }
+            this.Amount += amount;
+        }
+
+        public void Withdraw(decimal amount)
+        {
+            if (amount < 1000)
+            {
+                amount += (amount * 0.05m);
+                this.Amount -= amount;
+            }
+            else
+            {
+                amount += (amount * 0.02m);
+                this.Amount -= amount;
+            }
+        }
+    }
+}
+
+
+NUnit:
+
+using NUnit.Framework;
+using SeleniumBasicDemo;
+using System;
+using System.Text.RegularExpressions;
+
+namespace Tests
+{
+
+
+    [TestFixture]
+    public class BankAcountTests
+    {
+        [Test]
+        //OK:
+        public void AcountInitializeWithPositiveValue()
+        {
+            BankAcount acount = new BankAcount(2000m);
+            Assert.AreEqual(2000m, acount.Amount);
+        }
+        //OK:
+        [Test]
+        public void AcountDepositWithNegativeValue()
+        {
+            BankAcount acount = new BankAcount(2000m);
+            
+            Assert.Throws<ArgumentException>(() => acount.Deposit(-100));
+
+        }
+        //OK:
+        [Test]
+        public void WithdrawAmountSmallerThanThousants()
+        {
+            BankAcount acount = new BankAcount(1000m);
+            acount.Withdraw(800m);
+            Assert.AreEqual(160m, acount.Amount);
+        }
+        //OK:
+        [Test]
+        public void WithdrawAmountBiggerThanThousants()
+        {
+            BankAcount acount = new BankAcount(2000m);
+            acount.Withdraw(1800m);
+            Assert.AreEqual(164m, acount.Amount);
+        }
+        //OK:
+        [Test]
+        public void WithdrawWithNegative()
+        {
+            BankAcount acount = new BankAcount(2000m);
+            acount.Withdraw(-100m);
+            Assert.AreSame(2000m, acount.Amount);
+        }
+        //OK:
+        [Test]
+        public void WithdrawToNullAcount()
+        {
+            BankAcount acount = new BankAcount(997.5m);
+            acount.Withdraw(950m);
+            Assert.That(acount.Amount, Is.EqualTo(0));
+
+        }
+        //OK:
+        [Test]
+        public void WithdrawWithNegativeAnsCheckMessageForFail()
+        {
+            BankAcount acount = new BankAcount(2000m);
+            acount.Withdraw(-100m);
+            Assert.That(acount.Amount, Is.EqualTo(2000m), "Withdraw can be done with negative amount");
+        }
+        //OK:
+        [Test]
+        public void AcountInitializeWithNegativeValue()
+        {
+            
+            Assert.Throws<ArgumentException>(() => new BankAcount(-200m));
+
+        }
+
+
+    }
+
+    }
+
+
+
+
+
+
