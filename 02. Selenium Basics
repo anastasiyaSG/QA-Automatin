@@ -1,0 +1,85 @@
+using NUnit.Framework;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Text;
+
+namespace LiveSeleniumSetupDemo
+{
+    class Homework
+    {
+        private IWebDriver _driver;
+        private WebDriverWait _wait;
+
+        public IWebElement IWebElement { get; private set; }
+
+        [SetUp] 
+        public void SetUp()
+        {
+            _driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+                        _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(2));
+        }
+        [TearDown]
+        public void TearDown()
+        {
+            _driver.Quit();
+        }
+        [Test]
+        public void GoogleSeleniumAndCheckIfFirstResultIsCorrect()
+        {
+            _driver.Url = "https://www.google.com/";
+            IWebElement searchPanel = _driver.FindElement(By.Name("q"));
+            searchPanel.SendKeys("selenium");
+            searchPanel.SendKeys(Keys.Enter);
+
+            IWebElement firstResult = _driver.FindElement(By.CssSelector("#rso > div:nth-child(1) > div > div.r > a > div"));
+
+            IWebElement seleniumHeadlineResult =_driver.FindElement(By.CssSelector("#rso > div:nth-child(1) > div > div.r > a > h3"));
+           
+            Assert.AreEqual("Selenium",seleniumHeadlineResult.Text);
+            firstResult.Click();
+            Assert.AreEqual("https://www.selenium.dev/", _driver.Url);
+        }
+        [Test]
+        public void SoftuniCoursesCorrectHeadline()
+        {
+            _driver.Url = "https://softuni.bg/";
+            IWebElement goToLearningsFromNavigationBar = _driver.FindElement(By.XPath(@"//*[@id=""header-nav""]/div[1]/ul/li[2]/a/span"));
+            goToLearningsFromNavigationBar.Click();
+
+            IWebElement goToQAAutomationCoursePage = _driver.FindElement(By.XPath(@"//*[@id=""header-nav""]/div[1]/ul/li[2]/div/div/div[2]/div[2]/div/div[1]/ul[2]/div[1]/ul/li/a"));
+            goToQAAutomationCoursePage.Click();
+
+            IWebElement headlineCourse = _driver.FindElement(By.XPath(@"/html/body/div[2]/header/h1"));
+
+            Assert.AreEqual("QA Automation - май 2020", headlineCourse.Text);
+
+        }
+        [Test]
+        public void AutomationPracticeRegistration()
+        {
+            _driver.Url = "http://automationpractice.com/index.php";
+            
+            
+            IWebElement signInButton = _driver.FindElement(By.ClassName("login"));
+            signInButton.Click();
+
+            IWebElement emailSectionOnCheateAccount = _driver.FindElement(By.Id("email_create"));
+            emailSectionOnCheateAccount.SendKeys("pesho@gmail.com");
+
+            IWebElement createAccountButton = _driver.FindElement(By.CssSelector("#SubmitCreate"));
+            createAccountButton.Click();
+
+            IWebElement emailBannerOnRegistrationForm = _driver.FindElement(By.CssSelector("#email"));
+
+            Assert.AreEqual("pesho@gmail.com", emailBannerOnRegistrationForm.GetProperty("value"));
+
+              
+        }
+
+    }
+}
