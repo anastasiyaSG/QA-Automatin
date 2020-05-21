@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 
 namespace LiveSeleniumSetupDemo
 {
@@ -63,19 +64,21 @@ namespace LiveSeleniumSetupDemo
         public void AutomationPracticeRegistration()
         {
             _driver.Url = "http://automationpractice.com/index.php";
-            
-            
-            IWebElement signInButton = _driver.FindElement(By.ClassName("login"));
+
+            IWebElement signInButton = _wait.Until<IWebElement>(y=>y.FindElement(By.CssSelector("#header > div.nav > div > div > nav > div.header_user_info > a")));
             signInButton.Click();
+            
 
-            IWebElement emailSectionOnCheateAccount = _driver.FindElement(By.Id("email_create"));
+            IWebElement emailSectionOnCheateAccount = _wait.Until<IWebElement>(y => y.FindElement(By.Id("email_create")));
             emailSectionOnCheateAccount.SendKeys("pesho@gmail.com");
+           
 
-            IWebElement createAccountButton = _driver.FindElement(By.CssSelector("#SubmitCreate"));
+            IWebElement createAccountButton = _wait.Until<IWebElement>(y => y.FindElement(By.CssSelector("#SubmitCreate")));
             createAccountButton.Click();
 
-            IWebElement emailBannerOnRegistrationForm = _driver.FindElement(By.CssSelector("#email"));
-
+            Thread.Sleep(10000);
+            IWebElement emailBannerOnRegistrationForm = _wait.Until<IWebElement>(x=>x.FindElement(By.CssSelector("#email")));
+           
             Assert.AreEqual("pesho@gmail.com", emailBannerOnRegistrationForm.GetProperty("value"));
 
               
