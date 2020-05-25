@@ -1,0 +1,536 @@
+using NUnit.Framework;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Support.UI;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Text;
+using System.Threading;
+
+namespace SeleniumAdvance
+
+
+{
+    public class HomeworkSeleniumAdvanceExerciseOne
+    {
+
+        private IWebDriver _driver;
+        private Actions _builder;
+        private WebDriverWait _wait;
+        [SetUp]
+        public void SetUp()
+        {
+            _driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            _driver.Manage().Window.Maximize();
+            _driver.Navigate().GoToUrl("http://automationpractice.com/index.php/");
+            _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+           _builder = new Actions(_driver);
+
+            IWebElement signInButton = _wait.Until<IWebElement>(y => y.FindElement(By.CssSelector("#header > div.nav > div > div > nav > div.header_user_info > a")));
+            signInButton.Click();
+           
+            IWebElement emailSectionOnCheateAccount = _wait.Until<IWebElement>(y => y.FindElement(By.Id("email_create")));
+            emailSectionOnCheateAccount.SendKeys("pesho198098@gmail.com");
+
+            IWebElement createAccountButton = _wait.Until<IWebElement>(y => y.FindElement(By.CssSelector("#SubmitCreate")));
+            createAccountButton.Click();
+
+        }
+        [Test]
+        public void RegisterWithoutFirstName()
+        {
+    
+            IWebElement lastNamePanel = _wait.Until<IWebElement>(z=>z.FindElement(By.Id("customer_lastname")));
+            lastNamePanel.Click();
+            lastNamePanel.SendKeys("Goshov"+Keys.Tab);
+           
+            IWebElement passwordPanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("passwd")));
+            passwordPanel.Click();
+            passwordPanel.SendKeys("heyhey"+Keys.Tab);
+
+            IWebElement addressPanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("address1")));
+            addressPanel.Click();
+            addressPanel.SendKeys("Main str"+Keys.Tab);
+
+            IWebElement cityPanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("city")));
+            cityPanel.Click();
+                cityPanel.SendKeys("Alabama"+ Keys.Tab);
+
+            IWebElement idStatePanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("id_state")));
+            idStatePanel.Click();
+            _builder
+                .KeyDown(idStatePanel, Keys.Shift)
+                .SendKeys("Alabama")
+                .KeyUp(Keys.Shift)
+                .SendKeys(Keys.Enter)
+                .Perform();
+            
+            IWebElement phoneMobile = _wait.Until<IWebElement>(z => z.FindElement(By.Id("phone_mobile")));
+            phoneMobile.Click();
+            phoneMobile.SendKeys("123456789999"+Keys.Tab);
+
+            IWebElement posteCodePanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("postcode")));
+            posteCodePanel.Click();
+            posteCodePanel.SendKeys("00000" + Keys.Tab);
+
+            IWebElement registerButton = _wait.Until<IWebElement>(z=>z.FindElement(By.XPath("//*[@id='submitAccount']/span/i")));
+            registerButton.Click();
+
+            IWebElement alertMessage = _wait.Until<IWebElement>(z => z.FindElement(By.XPath("//*[@id='center_column']/div")));
+            var text = alertMessage.Text;
+           
+            StringAssert.Contains("firstname is required.", text);
+        }
+        [Test]
+        public void RegisterWithFirstNameStartWithSpace()
+        {
+            IWebElement firstNamePanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("firstname")));
+            firstNamePanel.Click();
+            firstNamePanel.SendKeys(" Peshka" + Keys.Tab);
+
+            IWebElement lastNamePanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("customer_lastname")));
+            lastNamePanel.Click();
+            lastNamePanel.SendKeys("Goshov" + Keys.Tab);
+
+            IWebElement passwordPanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("passwd")));
+            passwordPanel.Click();
+            passwordPanel.SendKeys("heyhey" + Keys.Tab);
+
+            IWebElement addressPanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("address1")));
+            addressPanel.Click();
+            addressPanel.SendKeys("Main str" + Keys.Tab);
+
+            IWebElement cityPanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("city")));
+            cityPanel.Click();
+            cityPanel.SendKeys("Alabama" + Keys.Tab);
+
+            IWebElement idStatePanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("id_state")));
+            idStatePanel.Click();
+            _builder
+                .KeyDown(idStatePanel, Keys.Shift)
+                .SendKeys("Alabama")
+                .KeyUp(Keys.Shift)
+                .SendKeys(Keys.Enter)
+                .Perform();
+
+            IWebElement phoneMobile = _wait.Until<IWebElement>(z => z.FindElement(By.Id("phone_mobile")));
+            phoneMobile.Click();
+            phoneMobile.SendKeys("123456789999" + Keys.Tab);
+
+            IWebElement posteCodePanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("postcode")));
+            posteCodePanel.Click();
+            posteCodePanel.SendKeys("00000" + Keys.Tab);
+
+            IWebElement registerButton = _wait.Until<IWebElement>(z => z.FindElement(By.XPath("//*[@id='submitAccount']/span/i")));
+            registerButton.Click();
+
+            IWebElement alertMessage = _wait.Until<IWebElement>(z => z.FindElement(By.XPath("//*[@id='center_column']/div")));
+            var text = alertMessage.Text;
+
+            StringAssert.Contains("firstname is required.", text);
+        }
+        [Test]
+        public void RegisterWithNoPasword()
+        {
+            IWebElement firstNamePanel = _wait.Until<IWebElement>(z => z.FindElement(By.XPath("//*[@id='customer_firstname']")));
+            firstNamePanel.Click();
+            firstNamePanel.SendKeys("Pesho" + Keys.Tab);
+
+            IWebElement lastNamePanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("customer_lastname")));
+            lastNamePanel.Click();
+            lastNamePanel.SendKeys("Goshov" + Keys.Tab);
+
+            IWebElement addressPanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("address1")));
+            addressPanel.Click();
+            addressPanel.SendKeys("Main str" + Keys.Tab);
+
+            IWebElement cityPanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("city")));
+            cityPanel.Click();
+            cityPanel.SendKeys("Alabama" + Keys.Tab);
+
+            IWebElement idStatePanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("id_state")));
+            idStatePanel.Click();
+            _builder
+                .KeyDown(idStatePanel, Keys.Shift)
+                .SendKeys("Alabama")
+                .KeyUp(Keys.Shift)
+                .SendKeys(Keys.Enter)
+                .Perform();
+
+            IWebElement phoneMobile = _wait.Until<IWebElement>(z => z.FindElement(By.Id("phone_mobile")));
+            phoneMobile.Click();
+            phoneMobile.SendKeys("123456789999" + Keys.Tab);
+
+            IWebElement posteCodePanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("postcode")));
+            posteCodePanel.Click();
+            posteCodePanel.SendKeys("00000" + Keys.Tab);
+
+            IWebElement registerButton = _wait.Until<IWebElement>(z => z.FindElement(By.XPath("//*[@id='submitAccount']/span/i")));
+            registerButton.Click();
+
+            IWebElement alertMessage = _wait.Until<IWebElement>(z => z.FindElement(By.XPath("//*[@id='center_column']/div")));
+            var text = alertMessage.Text;
+
+            StringAssert.Contains("passwd is required.", text);
+        }
+        [Test]
+        public void RegisterNumberLetterZipcode()
+        {
+            IWebElement firstNamePanel = _wait.Until(z=>z.FindElement(By.XPath("//*[@id='customer_firstname']")));
+            firstNamePanel.Click();
+            firstNamePanel.SendKeys("Pesho" + Keys.Tab);
+
+            IWebElement lastNamePanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("customer_lastname")));
+            lastNamePanel.Click();
+            lastNamePanel.SendKeys("Goshov" + Keys.Tab);
+
+            IWebElement passwordPanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("passwd")));
+            passwordPanel.Click();
+            passwordPanel.SendKeys("heyhey" + Keys.Tab);
+
+
+
+            IWebElement addressPanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("address1")));
+            addressPanel.Click();
+            addressPanel.SendKeys("Main str" + Keys.Tab);
+
+            IWebElement cityPanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("city")));
+            cityPanel.Click();
+            cityPanel.SendKeys("Alabama" + Keys.Tab);
+
+            IWebElement idStatePanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("id_state")));
+            idStatePanel.Click();
+            _builder
+                .KeyDown(idStatePanel, Keys.Shift)
+                .SendKeys("Alabama")
+                .KeyUp(Keys.Shift)
+                .SendKeys(Keys.Enter)
+                .Perform();
+
+            IWebElement phoneMobile = _wait.Until<IWebElement>(z => z.FindElement(By.Id("phone_mobile")));
+            phoneMobile.Click();
+            phoneMobile.SendKeys("123456789999" + Keys.Tab);
+
+            IWebElement posteCodePanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("postcode")));
+            posteCodePanel.Click();
+            posteCodePanel.SendKeys("1234ABS" + Keys.Tab);
+
+            IWebElement registerButton = _wait.Until<IWebElement>(z => z.FindElement(By.XPath("//*[@id='submitAccount']/span/i")));
+            registerButton.Click();
+
+            IWebElement alertMessage = _wait.Until<IWebElement>(z => z.FindElement(By.XPath("//*[@id='center_column']/div")));
+            var text = alertMessage.Text;
+
+            StringAssert.Contains("The Zip/Postal code you've entered is invalid. It must follow this format: 00000", text);
+        }
+        [Test]
+        public void RegisterWithoutPhoneNumber()
+        {
+            IWebElement firstNamePanel = _wait.Until(z => z.FindElement(By.XPath("//*[@id='customer_firstname']")));
+            firstNamePanel.Click();
+            firstNamePanel.SendKeys("Pesho" + Keys.Tab);
+
+            IWebElement lastNamePanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("customer_lastname")));
+            lastNamePanel.Click();
+            lastNamePanel.SendKeys("Goshov" + Keys.Tab);
+
+            IWebElement passwordPanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("passwd")));
+            passwordPanel.Click();
+            passwordPanel.SendKeys("heyhey" + Keys.Tab);
+
+            IWebElement addressPanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("address1")));
+            addressPanel.Click();
+            addressPanel.SendKeys("Main str" + Keys.Tab);
+
+            IWebElement cityPanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("city")));
+            cityPanel.Click();
+            cityPanel.SendKeys("Alabama" + Keys.Tab);
+
+            IWebElement idStatePanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("id_state")));
+            idStatePanel.Click();
+            _builder
+                .KeyDown(idStatePanel, Keys.Shift)
+                .SendKeys("Alabama")
+                .KeyUp(Keys.Shift)
+                .SendKeys(Keys.Enter)
+                .Perform();
+
+            IWebElement posteCodePanel = _wait.Until<IWebElement>(z => z.FindElement(By.Id("postcode")));
+            posteCodePanel.Click();
+            posteCodePanel.SendKeys("12345" + Keys.Tab);
+
+            IWebElement registerButton = _wait.Until<IWebElement>(z => z.FindElement(By.XPath("//*[@id='submitAccount']/span/i")));
+            registerButton.Click();
+
+            IWebElement alertMessage = _wait.Until<IWebElement>(z => z.FindElement(By.XPath("//*[@id='center_column']/div")));
+            var text = alertMessage.Text;
+
+            StringAssert.Contains("You must register at least one phone number.", text);
+        }
+        [TearDown]
+        public void TearDown()
+        {
+         _driver.Quit();
+        }
+
+
+
+
+    }
+
+    public class HomeworkSeleniumAdvanceExerciseTwo
+    {
+
+        private IWebDriver _driver;
+        private Actions _builder;
+        private WebDriverWait _wait;
+
+   
+
+        [SetUp]
+        public void SetUp()
+        {
+            _driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            _driver.Manage().Window.Maximize();
+            _driver.Navigate().GoToUrl("http://www.demoqa.com/interaction");
+            _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+            _builder = new Actions(_driver);
+        }
+        [TearDown]
+        public void TearDown()
+        {
+            _driver.Quit();
+        }
+
+        [Test]
+        public void dragToCenterLogo()
+        {
+            IJavaScriptExecutor js = _driver as IJavaScriptExecutor;
+            js.ExecuteScript("window.scrollBy(0,950)");
+
+            IWebElement draggableBanner = _driver.FindElement(By.XPath("/html/body/div/div/div/div[2]/div[1]/div/div/div[5]/div/ul/li[5]"));
+            draggableBanner.Click();
+            var dragBox = _driver.FindElement(By.Id("dragBox"));
+            var target = _driver.FindElement(By.XPath("//*[@id='app']/header/a/img"));
+            double targetPosX = target.Location.X;
+            var targetPosY = target.Location.Y;
+
+            _builder
+                .DragAndDrop(dragBox,target)
+                .Perform();
+
+            Assert.AreEqual(375, dragBox.Location.X);
+
+        }
+        [Test]
+        public void dragToRight()
+        {
+            IJavaScriptExecutor js = _driver as IJavaScriptExecutor;
+            js.ExecuteScript("window.scrollBy(0,950)");
+
+            IWebElement draggableBanner = _driver.FindElement(By.XPath("/html/body/div/div/div/div[2]/div[1]/div/div/div[5]/div/ul/li[5]"));
+            draggableBanner.Click();
+            var dragBox = _driver.FindElement(By.Id("dragBox"));
+           
+            _builder
+                .DragAndDropToOffset(dragBox,900,-300)
+                .Perform();
+
+            Assert.AreEqual(1275, dragBox.Location.X);
+            }
+        [Test]
+        public void dragToBottom()
+        {
+            IJavaScriptExecutor js = _driver as IJavaScriptExecutor;
+            js.ExecuteScript("window.scrollBy(0,950)");
+
+            IWebElement draggableBanner = _driver.FindElement(By.XPath("/html/body/div/div/div/div[2]/div[1]/div/div/div[5]/div/ul/li[5]"));
+            draggableBanner.Click();
+
+            var dragBox = _driver.FindElement(By.Id("dragBox"));
+            var dragBoxPositionYBefore = dragBox.Location.Y;
+
+            _builder
+                .DragAndDropToOffset(dragBox, 900, 150)
+                .Perform();
+
+            var dragBoxPositionYAfter = dragBox.Location.Y;
+
+            Assert.AreNotEqual(dragBoxPositionYBefore,dragBoxPositionYAfter);
+        }
+        [Test]
+        public void dropToTarget()
+        {
+            IJavaScriptExecutor js = _driver as IJavaScriptExecutor;
+            js.ExecuteScript("window.scrollBy(0,950)");
+
+            IWebElement droppableBanner = _driver.FindElement(By.XPath("/html/body/div/div/div/div[2]/div[1]/div/div/div[5]/div/ul/li[4]"));
+            droppableBanner.Click();
+
+            var sourcebleBox = _wait.Until<IWebElement> (y=>y.FindElement(By.Id("draggable")));
+            var targetBox = _wait.Until<IWebElement>(y => y.FindElement(By.Id("droppable")));
+            var colorBefore = targetBox.GetCssValue("background-color");
+            _builder
+                .DragAndDrop(sourcebleBox, targetBox)
+                .Perform();
+            
+            var colorAfter = targetBox.GetCssValue("background-color");
+            Assert.IsFalse(colorAfter == colorBefore);
+        }
+        [Test]
+        public void dropHalfToTarget()
+        {
+            IJavaScriptExecutor js = _driver as IJavaScriptExecutor;
+            js.ExecuteScript("window.scrollBy(0,950)");
+
+            IWebElement droppableBanner = _driver.FindElement(By.XPath("/html/body/div/div/div/div[2]/div[1]/div/div/div[5]/div/ul/li[4]"));
+            droppableBanner.Click();
+
+            var sourcebleBox = _wait.Until<IWebElement>(y => y.FindElement(By.Id("draggable")));
+            var targetBox = _wait.Until<IWebElement>(y => y.FindElement(By.Id("droppable")));
+            var colorBefore = targetBox.GetCssValue("background-color");
+
+            _builder
+                .DragAndDropToOffset(sourcebleBox, 88,-8)
+                .Perform();
+
+            var colorAfter = targetBox.GetCssValue("background-color");
+            Assert.IsTrue(colorAfter == colorBefore);
+        }
+        [Test]
+        public void dropToTargetAndCheckText()
+        {
+            IJavaScriptExecutor js = _driver as IJavaScriptExecutor;
+            js.ExecuteScript("window.scrollBy(0,950)");
+            
+            IWebElement droppableBanner = _wait.Until<IWebElement>(y => y.FindElement(By.XPath("/html/body/div/div/div/div[2]/div[1]/div/div/div[5]/div/ul/li[4]")));
+            droppableBanner.Click();
+
+            var sourcebleBox = _wait.Until<IWebElement>(y => y.FindElement(By.Id("draggable")));
+            var targetBox = _wait.Until<IWebElement>(y => y.FindElement(By.Id("droppable")));
+          
+            _builder
+                .DragAndDrop(sourcebleBox,targetBox)
+                .Perform();
+
+            Assert.AreEqual("Dropped!", targetBox.Text);
+        }
+
+        [Test]
+        public void resizeBox()
+        {
+            IJavaScriptExecutor js = _driver as IJavaScriptExecutor;
+            js.ExecuteScript("window.scrollBy(0,950)");
+            
+            IWebElement resizableBanner = _wait.Until(x=>x.FindElement(By.XPath("/html/body/div/div/div/div[2]/div[1]/div/div/div[5]/div/ul/li[3]")));
+            resizableBanner.Click();
+          
+            var box = _driver.FindElement(By.Id("resizable"));
+            double expectedWidth = box.Size.Width + 100;
+            double expectedHeight = box.Size.Height + 100;
+            js.ExecuteScript("window.scrollBy(0,950)");
+
+            var resize = _driver.FindElement(By.XPath("/html/body/div/div/div/div[2]/div[2]/div[1]/div[2]/div/span"));
+
+            _builder.DragAndDropToOffset(resize, 100, 100).Perform();
+
+            double actualWidth = box.Size.Width;
+            double actualHeight = box.Size.Height;
+
+            Assert.AreEqual(expectedWidth, actualWidth,2);
+            Assert.AreEqual(expectedHeight, actualHeight,2);
+                  }
+        [Test]
+        public void resizeBoxToMax()
+        {
+            IJavaScriptExecutor js = _driver as IJavaScriptExecutor;
+            js.ExecuteScript("window.scrollBy(0,950)");
+
+            IWebElement resizableBanner = _wait.Until(x => x.FindElement(By.XPath("/html/body/div/div/div/div[2]/div[1]/div/div/div[5]/div/ul/li[3]")));
+            resizableBanner.Click();
+           
+            var box = _driver.FindElement(By.Id("resizableBoxWithRestriction"));
+           
+            IJavaScriptExecutor js2 = _driver as IJavaScriptExecutor;
+            js2.ExecuteScript("window.scrollBy(0,950)");
+
+            var resize = _driver.FindElement(By.XPath("/html/body/div/div/div/div[2]/div[2]/div[1]/div[1]/div/span"));
+
+            _builder.DragAndDropToOffset(resize, 350, 150).Perform();
+           
+            Assert.AreEqual(360, box.Location.X,2);
+            Assert.AreEqual(237, box.Location.Y, 2);
+
+        }
+
+        [Test]
+        public void selectableClickOnList()
+        {
+            IJavaScriptExecutor js = _driver as IJavaScriptExecutor;
+            js.ExecuteScript("window.scrollBy(0,950)");
+
+            IWebElement selectableBanner = _wait.Until(x => x.FindElement(By.XPath("/html/body/div/div/div/div[2]/div[1]/div/div/div[5]/div/ul/li[2]")));
+            selectableBanner.Click();
+
+            var firstBox = _driver.FindElement(By.XPath("//*[@id='verticalListContainer']/li[1]"));
+            var colorBefore = firstBox.GetCssValue("color");
+            firstBox.Click();
+            var colorAfter = firstBox.GetCssValue("color");
+            
+            Assert.AreNotSame(colorBefore,colorAfter); 
+        }
+
+        [Test]
+        public void selectableDoubleClickOnList()
+        {
+            IJavaScriptExecutor js = _driver as IJavaScriptExecutor;
+            js.ExecuteScript("window.scrollBy(0,950)");
+
+            IWebElement selectableBanner = _wait.Until(x => x.FindElement(By.XPath("/html/body/div/div/div/div[2]/div[1]/div/div/div[5]/div/ul/li[2]")));
+            selectableBanner.Click();
+
+            var firstBox = _driver.FindElement(By.XPath("//*[@id='verticalListContainer']/li[1]"));
+            var colorBefore = firstBox.GetCssValue("color");
+            _builder.DoubleClick().Perform();
+            var colorAfter = firstBox.GetCssValue("color");
+
+            Assert.AreEqual(colorBefore, colorAfter);
+        }
+
+        [Test]
+        public void sortableFirstGoToEnd()
+        {
+            IJavaScriptExecutor js = _driver as IJavaScriptExecutor;
+            js.ExecuteScript("window.scrollBy(0,950)");
+
+            IWebElement sortableBanner = _wait.Until(x => x.FindElement(By.XPath("/html/body/div/div/div/div[2]/div[1]/div/div/div[5]/div/ul/li[1]")));
+            sortableBanner.Click();
+  
+            var firstListElement= _wait.Until<IWebElement>(x => x.FindElement(By.XPath("/html/body/div/div/div/div[2]/div[2]/div[1]/div/div[1]/div/div[1]")));
+            _builder.DragAndDrop(firstListElement, sortableBanner).Perform();
+
+            Assert.AreEqual("Two", firstListElement.Text);
+        }
+
+        [Test]
+        public void sortableFiveGoFirst()
+        {
+            IJavaScriptExecutor js = _driver as IJavaScriptExecutor;
+            js.ExecuteScript("window.scrollBy(0,950)");
+
+            IWebElement sortableBanner = _wait.Until(x => x.FindElement(By.XPath("/html/body/div/div/div/div[2]/div[1]/div/div/div[5]/div/ul/li[1]")));
+            sortableBanner.Click();
+          
+            var fiveListElement = _wait.Until<IWebElement>(x => x.FindElement(By.XPath("/html/body/div/div/div/div[2]/div[2]/div[1]/div/div[1]/div/div[5]")));
+            var sortableHeadline = _wait.Until<IWebElement>(x => x.FindElement(By.XPath("//*[@id='app']/div/div/div[1]")));
+          
+            _builder
+                .DragAndDrop(fiveListElement,sortableHeadline).Perform();
+
+            Assert.AreEqual("Four", fiveListElement.Text);
+        }
+    }
+}
